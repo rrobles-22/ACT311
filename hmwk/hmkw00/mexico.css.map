@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAKA,AAAA,EAAE,CAAC;EACC,KAAK,EANM,OAAO;EAOlB,eAAe,EAND,OAAO;CAMe;;AAExC,AAAA,EAAE,CAAC;EACC,KAAK,EATS,OAAO;EAUrB,gBAAgB,EAXL,OAAO;CAWgB",
+    "sources": [
+        "mexico.sass"
+    ],
+    "names": [],
+    "file": "mexico.css"
+}
