@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>homework 6</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="CSMP.json"></script>
+    <script>
+     const professors = [];
+     const students = []; 
+     
+    
+    async function theFetch() {    
+        let response = await fetch('./CSMP.json');
+    if (!response.ok) {
+        heading.innerText ="error";
+    } else {
+        let myJson = await response.json();
+        for(child of myJson){
+               students.push(child);
+                if(!(professors.includes(child.instructor)))
+                {
+                    professors.push(child.instructor); 
+                }
+            }
+            heading.innerText="Courses";
+            instructorselection();
+            classesforinstructor();
+        }
+    }
+        function instructorselection(){
+            let lines = "";
+            let theBody = document.getElementById("professorlist");
+           for(instructor in professors){
+            console.log(professors[instructor]);
+            lines+= "<option value="+professors[instructor]+">"+professors[instructor]+"</option>";
+            }
+            theBody.innerHTML = lines;
+        }
+        
+        function classesforinstructor(){
+            let lines ="";
+            courses = [];
+           var e = document.getElementById("professorlist");
+          var val1 = e.options[e.selectedIndex].value;
+            let selectedInstructor = e.options[e.selectedIndex].text;
+
+            for(child in students)
+            {
+               console.log(selectedInstructor);
+               console.log(students[child].instructor)
+                if(students[child].hours >0){
+                if(selectedInstructor==students[child].instructor){
+                    courses.push(new Course(students[child].course,students[child].title,students[child].days,students[child].hours,students[child].room,students[child].times))
+                }
+            }
+            }
+            
+            courses.sort(function(x,y){
+                var dayx = x.days;
+                var dayy = y.days;
+                if(dayx < dayy){
+                    return-1;
+                }
+                if(dayx> dayy){
+                    return 1;
+                }
+                if(x.times.includes("AM")){
+                    if(y.times.includes("PM")){
+                        return -1;
+                    }
+                    if(x.times<y.times){
+                    return -1
+                    }
+                    if(x.times>y.times){
+                        return 1
+                    }
+                }
+                if(x.times.includes("PM")){
+                    if(y.times.includes("AM")){
+                        return 1;
+                    }
+                if(x.times<y.times){
+                    return -1
+                    }
+                if(x.times>y.times){
+                        return 1
+                    }
+                return 0;
+                }
+
+            })
+
+            for(course in courses){
+                lines+= "<li>"
+                
+                    lines+= courses[course].print() +"</li>"
+                
+            }
+            let list = document.getElementById("classList");
+            list.innerHTML = lines;
+        }
+
+        function Course(course,title,days,hours,room,times){
+            this.course = course;
+            this.title = title;
+            this.days = days;
+            this.hours = hours;
+            this.room = room;
+            this.times = times;
+            this.print = function(){
+                return this.course + " " + this.title + " reports on " + this.days + " at " + this.times +" for "+this.hours +"hours in " + this.room;
+            }
+        }
+        function first()
+        {   
+            theFetch()
+            .catch(e => {
+            console.log('there seems to be an issue: ' + e.message);
+        });
+        }
+    </script>
+</head>
+
+<body onload="first()">   
+    <h1 id =heading>Courses</h1>
+    <label>Choose instructor:</label>
+    <select name="professors" id="professorlist" onchange="classesforinstructor()"></select>
+    <ul id = "classList">
+        
+    </ul>
+      
+
+</body>
+</html>
